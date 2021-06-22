@@ -1,0 +1,3 @@
+{
+  "database": "myuser:password@tcp(119.29.72.49:3306)/chatroom?charset=utf8"
+}
