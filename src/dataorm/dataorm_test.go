@@ -26,7 +26,7 @@ func Test_insert(t *testing.T) {
 				Status:    "",
 			}},
 			wantErr: false,
-		},{
+		}, {
 			name: "b",
 			args: args{
 				data: Room{
@@ -36,7 +36,7 @@ func Test_insert(t *testing.T) {
 				},
 			},
 			wantErr: false,
-		},{
+		}, {
 			name: "c",
 			args: args{
 				data: Userinroom{
@@ -76,18 +76,18 @@ func Test_query(t *testing.T) {
 				where:     nil,
 				values:    nil,
 			},
-			want: nil,
+			want:    nil,
 			wantErr: false,
 		},
 		{
 			name: "b",
 			args: args{
 				tablename: "User",
-				cols:      []string{"i_d","name"},
-				where:     []string{"i_d","name"},
-				values:    []string{"1","syg"},
+				cols:      []string{"i_d", "name"},
+				where:     []string{"i_d", "name"},
+				values:    []string{"1", "syg"},
 			},
-			want: nil,
+			want:    nil,
 			wantErr: false,
 		},
 	}
@@ -147,11 +147,11 @@ func Test_update(t *testing.T) {
 			name: "a",
 			args: args{
 				data: User{
-					ID: 5,
-					Phone:     "99999",
-					Email:     "",
-					Password:  "",
-					Status:    "",
+					ID:       5,
+					Phone:    "99999",
+					Email:    "",
+					Password: "",
+					Status:   "",
 				},
 			},
 		},
