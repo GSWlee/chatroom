@@ -5,9 +5,10 @@ import (
 	"github.com/astaxie/beego/orm"
 	_ "github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql" // import your used driver
+	"time"
 )
 
-var config = "myuser:password@tcp(119.29.72.49:3306)/chatroom?charset=utf8"
+var config = ""
 
 //数据库三个表中对象的实例化
 //orm:"pk"代表主键
@@ -36,13 +37,21 @@ type Userinroom struct {
 	Roomid int
 }
 
+type History struct {
+	ID     int `orm:"pk;auto"`
+	Userid int
+	Roomid int
+	Time   time.Time `orm:"auto_now_add;type(datetime)"`
+	Data   string    `orm:"type(text)"`
+}
+
 //init function
 func init() {
 
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 
 	// register model
-	orm.RegisterModel(new(User), new(Room), new(Userinroom))
+	orm.RegisterModel(new(User), new(Room), new(Userinroom), new(History))
 
 	// set default database
 	orm.RegisterDataBase("default", "mysql", config, 30)
@@ -55,7 +64,7 @@ func init() {
 //@param: data:插入对象，主键缺省，数据库自动填充
 //@return：如果插入失败，返回错误信息
 
-func insert(data interface{}) error {
+func Insert(data interface{}) error {
 	orm.Debug = true
 	o := orm.NewOrm()
 	o.Using("default")
@@ -78,6 +87,12 @@ func insert(data interface{}) error {
 		}
 		return nil
 	}
+	if value, ok := data.(History); ok {
+		if _, err := o.Insert(&value); err != nil {
+			return err
+		}
+		return nil
+	}
 	err := errors.New("Wrong type!")
 	return err
 }
@@ -90,7 +105,7 @@ func insert(data interface{}) error {
 //@return：如果查询失败，返回错误信息
 //@example: tablename=User;cols=nil;where=["name"];values=["jack"] ==> select * from User where name = "jack"
 
-func query(tablename string, cols []string, where []string, values []string) (interface{}, error) {
+func Query(tablename string, cols []string, where []string, values []string) (interface{}, error) {
 
 	orm.Debug = true
 	o := orm.NewOrm()
@@ -179,6 +194,34 @@ func query(tablename string, cols []string, where []string, values []string) (in
 			return userinrooms, err
 		}
 	}
+	if tablename == "History" {
+		var historys []History
+		SQL := "SELECT "
+		if len(cols) != 0 {
+			for i := 0; i < len(cols); i++ {
+				SQL = SQL + cols[i] + " ,"
+			}
+		} else {
+			SQL = SQL + " * ,"
+		}
+		SQL = SQL[:len(SQL)-1] + " FROM history"
+		if len(where) != 0 {
+			SQL += " WHERE "
+			for i := 0; i < len(cols); i++ {
+				if where[i] == "i_d" {
+					SQL = SQL + where[i] + " = " + values[i] + " AND "
+				} else {
+					SQL = SQL + where[i] + " = " + "\"" + values[i] + "\"" + " AND "
+				}
+
+			}
+			SQL = SQL[:len(SQL)-4]
+		}
+		_, err := o.Raw(SQL).QueryRows(&historys)
+		if err == nil {
+			return historys, err
+		}
+	}
 	return nil, errors.New("Wrong table name")
 
 }
@@ -188,7 +231,7 @@ func query(tablename string, cols []string, where []string, values []string) (in
 //@param2: id : 待删除行的主键
 //@return：如果删除失败，返回错误信息
 
-func delete(tablename string, id int) error {
+func Delete(tablename string, id int) error {
 	orm.Debug = true
 	o := orm.NewOrm()
 	o.Using("default")
@@ -219,6 +262,16 @@ func delete(tablename string, id int) error {
 			return err
 		}
 	}
+	if tablename == "History" {
+		uir := History{ID: id}
+		n, err := o.Delete(&uir)
+		if n > 0 && err == nil {
+			return nil
+		} else {
+			return err
+		}
+	}
+
 	return errors.New("Wrong table name")
 }
 
@@ -226,7 +279,7 @@ func delete(tablename string, id int) error {
 //@param: data:替换对象
 //@return：如果替换失败，返回错误信息
 //warning：是将输入的data替换整个原来的数据项，并不是修改data中不一样的项
-func update(data interface{}) error {
+func Update(data interface{}) error {
 	orm.Debug = true
 	o := orm.NewOrm()
 	o.Using("default")
@@ -244,6 +297,12 @@ func update(data interface{}) error {
 		return nil
 	}
 	if value, ok := data.(Userinroom); ok {
+		if _, err := o.Update(&value); err != nil {
+			return err
+		}
+		return nil
+	}
+	if value, ok := data.(History); ok {
 		if _, err := o.Update(&value); err != nil {
 			return err
 		}
