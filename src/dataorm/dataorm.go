@@ -123,7 +123,7 @@ func Query(tablename string, cols []string, where []string, values []string) (in
 		SQL = SQL[:len(SQL)-1] + " FROM user"
 		if len(where) != 0 {
 			SQL += " WHERE "
-			for i := 0; i < len(cols); i++ {
+			for i := 0; i < len(where); i++ {
 				if where[i] == "i_d" {
 					SQL = SQL + where[i] + " = " + values[i] + " AND "
 				} else {
@@ -151,7 +151,7 @@ func Query(tablename string, cols []string, where []string, values []string) (in
 		SQL = SQL[:len(SQL)-1] + " FROM room"
 		if len(where) != 0 {
 			SQL += " WHERE "
-			for i := 0; i < len(cols); i++ {
+			for i := 0; i < len(where); i++ {
 				if where[i] == "i_d" {
 					SQL = SQL + where[i] + " = " + values[i] + " AND "
 				} else {
@@ -179,7 +179,7 @@ func Query(tablename string, cols []string, where []string, values []string) (in
 		SQL = SQL[:len(SQL)-1] + " FROM userinroom"
 		if len(where) != 0 {
 			SQL += " WHERE "
-			for i := 0; i < len(cols); i++ {
+			for i := 0; i < len(where); i++ {
 				if where[i] == "i_d" {
 					SQL = SQL + where[i] + " = " + values[i] + " AND "
 				} else {
@@ -207,7 +207,7 @@ func Query(tablename string, cols []string, where []string, values []string) (in
 		SQL = SQL[:len(SQL)-1] + " FROM history"
 		if len(where) != 0 {
 			SQL += " WHERE "
-			for i := 0; i < len(cols); i++ {
+			for i := 0; i < len(where); i++ {
 				if where[i] == "i_d" {
 					SQL = SQL + where[i] + " = " + values[i] + " AND "
 				} else {
