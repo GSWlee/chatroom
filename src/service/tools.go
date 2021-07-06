@@ -17,6 +17,17 @@ func getRoomID(RoomName string) (int, error) {
 	return room.ID, nil
 }
 
+func getRoomName(RoomId int) string {
+	users, err := dataorm.Query("Room", nil, []string{"i_d"}, []string{strconv.Itoa(RoomId)})
+	if err != nil {
+		return ""
+	}
+
+	roomvalue, _ := users.([]dataorm.Room)
+	room := roomvalue[0]
+	return room.Name
+}
+
 func getUserID(UserName string) (int, error) {
 	users, err := dataorm.Query("User", nil, []string{"name"}, []string{UserName})
 	if err != nil {
