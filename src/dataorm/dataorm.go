@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-var config = ""
+var config = "myuser:password@tcp(119.29.72.49:3306)/chatroom?charset=utf8"
 
 //数据库三个表中对象的实例化
 //orm:"pk"代表主键
