@@ -38,11 +38,12 @@ type Userinroom struct {
 }
 
 type History struct {
-	ID     int `orm:"pk;auto"`
-	Userid int
-	Roomid int
-	Time   time.Time `orm:"auto_now_add;type(datetime)"`
-	Data   string    `orm:"type(text)"`
+	ID        int `orm:"pk;auto"`
+	Userid    int
+	Roomid    int
+	Messageid string    `orm:"size(100)"`
+	Time      time.Time `orm:"auto_now_add;type(datetime)"`
+	Data      string    `orm:"type(text)"`
 }
 
 //init function
