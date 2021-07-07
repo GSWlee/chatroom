@@ -3,7 +3,7 @@ package service
 import "chatroom/src/dataorm"
 
 type userService interface {
-	CreateUser(FirstName, LastName, Phone, Email, Password string) error
+	CreateUser(UserName, FirstName, LastName, Phone, Email, Password string) error
 	UserInfo(username string) (dataorm.User, error)
 	//todo
 	Login()
@@ -16,9 +16,9 @@ type Userservice struct {
 //@param: 输入参数
 //@return: 如果失败，返回错误
 
-func (r Userservice) CreateUser(FirstName, LastName, Phone, Email, Password string) error {
+func (r Userservice) CreateUser(UserName, FirstName, LastName, Phone, Email, Password string) error {
 	user := dataorm.User{
-		Name:      FirstName + " " + LastName,
+		Name:      UserName,
 		Firstname: FirstName,
 		Lastname:  LastName,
 		Phone:     Phone,

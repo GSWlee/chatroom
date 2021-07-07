@@ -11,7 +11,7 @@ type HistorySlice []dataorm.History
 func (s HistorySlice) Len() int      { return len(s) }
 func (s HistorySlice) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
 func (s HistorySlice) Less(i, j int) bool {
-	return s[i].Time.Before(s[j].Time)
+	return s[i].Time.After(s[j].Time)
 }
 
 type messageService interface {
@@ -28,11 +28,12 @@ type MessageService struct {
 //@param3: message: 信息内容
 //@return：如果删除失败，返回错误信息
 
-func (s MessageService) Send(userid int, roomid int, message string) error {
+func (s MessageService) Send(userid int, roomid int, messageid string, message string) error {
 	history := dataorm.History{
-		Userid: userid,
-		Roomid: roomid,
-		Data:   message,
+		Userid:    userid,
+		Roomid:    roomid,
+		Data:      message,
+		Messageid: messageid,
 	}
 	if err := dataorm.Insert(history); err != nil {
 		return err
