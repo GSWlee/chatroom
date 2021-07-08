@@ -1,12 +1,14 @@
 package service
 
-import "chatroom/src/dataorm"
+import (
+	"chatroom/src/dataorm"
+	"errors"
+)
 
 type userService interface {
 	CreateUser(UserName, FirstName, LastName, Phone, Email, Password string) error
 	UserInfo(username string) (dataorm.User, error)
-	//todo
-	Login()
+	Login(username, password string) error
 }
 
 type Userservice struct {
@@ -36,7 +38,7 @@ func (r Userservice) CreateUser(UserName, FirstName, LastName, Phone, Email, Pas
 //@param: username：用户名
 //@return: 如果失败，返回错误
 
-func (r Userservice) Userinfo(username string) (dataorm.User, error) {
+func (r Userservice) UserInfo(username string) (dataorm.User, error) {
 	users, err := dataorm.Query("User", nil, []string{"name"}, []string{username})
 	if err != nil {
 		return dataorm.User{}, err
@@ -46,7 +48,16 @@ func (r Userservice) Userinfo(username string) (dataorm.User, error) {
 	return uservalue[0], nil
 }
 
-//todo
-func (r Userservice) Login() {
-
+//@function: 用户登陆
+//@return：如果登陆失败，返回{}与error，成功返回user信息
+func (r Userservice) Login(username string, password string) (dataorm.User, error) {
+	users, err := dataorm.Query("User", nil, []string{"name", "password"}, []string{username, password})
+	if err != nil {
+		return dataorm.User{}, err
+	}
+	uservalue, _ := users.([]dataorm.User)
+	if len(uservalue) != 1 {
+		return dataorm.User{}, errors.New("wrong password")
+	}
+	return uservalue[0], nil
 }
